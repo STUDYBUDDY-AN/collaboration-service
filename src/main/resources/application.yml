@@ -4,11 +4,6 @@ server:
 spring:
   application:
     name: collaboration-service
-  datasource:
-    url: jdbc:mysql://collaboration-mysql:3306/collaboration_service?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
-    username: mr.mime
-    password: StudyBuddy*123
-    driver-class-name: com.mysql.cj.jdbc.Driver
   config:
     import: optional:configserver:http://${CONFIG_SERVER_HOST:config-server}:8888
 
@@ -18,30 +13,12 @@ spring:
     username: guest
     password: guest
 
-  # Enable HikariCP connection pool (default)
-  datasource.hikari:
-    maximum-pool-size: 10
-    minimum-idle: 2
-
-  flyway:
-    enabled: true
-    baseline-on-migrate: true
-    validate-on-migrate: true
-    repair: true
-
 logging:
   pattern:
     console: "%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n"
-
-  level:
-    org.springframework.jdbc.core: DEBUG   # Show SQL logs
 
 management:
   endpoints:
     web:
       exposure:
         include: health,info,refresh
-
-testing:
-  profile:
-    name: default-profile
