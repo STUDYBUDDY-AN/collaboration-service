@@ -70,6 +70,7 @@ The application will be available at `http://localhost:8082`.
 | `GET` | `/groups/{groupId}/messages` | Get group messages. |
 | `POST` | `/groups/{groupId}/messages` | Send a message. |
 | `POST` | `/files/upload` | Upload a file. |
+| `GET` | `/test/profile` | Get active profile and DB URL (Test endpoint). |
 
 ### WebSockets
 

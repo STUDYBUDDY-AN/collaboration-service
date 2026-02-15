@@ -12,75 +12,64 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/files")
+@RequestMapping("/collab/api/v1/files")
 @AllArgsConstructor
 public class FileController {
 
-    private final FileStorageService fileStorageService;
+        private final FileStorageService fileStorageService;
 
-    @PostMapping("/upload")
-    public ResponseEntity<Map<String, Object>> uploadFile(
-            @RequestParam("file") MultipartFile file
-    ) throws Exception {
+        @PostMapping("/upload")
+        public ResponseEntity<Map<String, Object>> uploadFile(
+                        @RequestParam("file") MultipartFile file) throws Exception {
 
-        String url = fileStorageService.upload(file);
+                String url = fileStorageService.upload(file);
 
-        return ResponseEntity.ok(Map.of(
-                "url", url,
-                "type", file.getContentType(),
-                "size", file.getSize()
-        ));
-    }
+                return ResponseEntity.ok(Map.of(
+                                "url", url,
+                                "type", file.getContentType(),
+                                "size", file.getSize()));
+        }
 
-    @PostMapping("/presign/file")
-    public ResponseEntity<PresignUploadResponse> presignUploadForUserFile(
-            @RequestBody PresignUploadRequest request,
-            @RequestHeader("X-User-Id") UUID userId
-    ) throws Exception {
+        @PostMapping("/presign/file")
+        public ResponseEntity<PresignUploadResponse> presignUploadForUserFile(
+                        @RequestBody PresignUploadRequest request,
+                        @RequestHeader("X-User-Id") UUID userId) throws Exception {
 
-        PresignUploadResponse response =
-                fileStorageService.createPresignedForUserFile(
-                        userId,
-                        request.fileName(),
-                        request.fileType()
-                );
+                PresignUploadResponse response = fileStorageService.createPresignedForUserFile(
+                                userId,
+                                request.fileName(),
+                                request.fileType());
 
-        return ResponseEntity.ok(response);
-    }
+                return ResponseEntity.ok(response);
+        }
 
-    @PostMapping("/presign/attachment")
-    public ResponseEntity<PresignUploadResponse> presignUploadForAttachment(
-            @RequestBody PresignUploadRequest request,
-            @RequestParam("group_id") UUID groupId,
-            @RequestParam("message_id") UUID messageId
-    ) throws Exception {
+        @PostMapping("/presign/attachment")
+        public ResponseEntity<PresignUploadResponse> presignUploadForAttachment(
+                        @RequestBody PresignUploadRequest request,
+                        @RequestParam("group_id") UUID groupId,
+                        @RequestParam("message_id") UUID messageId) throws Exception {
 
-        PresignUploadResponse response =
-                fileStorageService.createPresignedForAttachment(
-                        groupId,
-                        messageId,
-                        request.fileName(),
-                        request.fileType()
-                );
+                PresignUploadResponse response = fileStorageService.createPresignedForAttachment(
+                                groupId,
+                                messageId,
+                                request.fileName(),
+                                request.fileType());
 
-        return ResponseEntity.ok(response);
-    }
+                return ResponseEntity.ok(response);
+        }
 
-    @PostMapping("/presign/note")
-    public ResponseEntity<PresignUploadResponse> presignUploadForNote(
-            @RequestBody PresignUploadRequest request,
-            @RequestParam("group_id") UUID groupId,
-            @RequestParam("message_id") UUID messageId
-    ) throws Exception {
+        @PostMapping("/presign/note")
+        public ResponseEntity<PresignUploadResponse> presignUploadForNote(
+                        @RequestBody PresignUploadRequest request,
+                        @RequestParam("group_id") UUID groupId,
+                        @RequestParam("message_id") UUID messageId) throws Exception {
 
-        PresignUploadResponse response =
-                fileStorageService.createPresignedForAttachment(
-                        groupId,
-                        messageId,
-                        request.fileName(),
-                        request.fileType()
-                );
+                PresignUploadResponse response = fileStorageService.createPresignedForAttachment(
+                                groupId,
+                                messageId,
+                                request.fileName(),
+                                request.fileType());
 
-        return ResponseEntity.ok(response);
-    }
+                return ResponseEntity.ok(response);
+        }
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Arrays;
 
 @RestController
-@RequestMapping("/test")
+@RequestMapping("/collab/test")
 public class TestingController {
 
     private final Environment environment;
@@ -34,4 +34,3 @@ public class TestingController {
                 "\n DB URL: " + config.getDatasourceUrl();
     }
 }
-
