@@ -8,10 +8,10 @@ on:
 
   workflow_dispatch:
     inputs:
-      branch:
-        description: "Branch to build and push"
+      image_tag:
+        description: "Docker image tag"
         required: true
-        default: "main"
+        default: "latest"
 
 jobs:
   build-and-push:
@@ -25,7 +25,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.branch || github.event.pull_request.head.ref }}
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || '' }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -36,17 +36,16 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASS }}
 
-      - name: Extract branch name
+      - name: Determine Docker Tag
         id: vars
         run: |
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            BRANCH_NAME="${{ github.event.inputs.branch }}"
+            TAG="${{ inputs.image_tag }}"
           else
             BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+            TAG=$(echo "$BRANCH_NAME" | tr '/' '-')
           fi
-
-          SAFE_BRANCH_NAME=$(echo "$BRANCH_NAME" | tr '/' '-')
-          echo "branch=$SAFE_BRANCH_NAME" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
 
       - name: Build and push
         uses: docker/build-push-action@v5
@@ -55,5 +54,5 @@ jobs:
           file: Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/collaboration-service:${{ steps.vars.outputs.branch }}
+            ${{ secrets.DOCKER_USERNAME }}/collaboration-service:${{ steps.vars.outputs.tag }}
             ${{ secrets.DOCKER_USERNAME }}/collaboration-service:latest
