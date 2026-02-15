@@ -50,7 +50,7 @@ This microservice manages study groups, real-time messaging, and file sharing wi
 ### Running Locally
 
 1.  **Start Infrastructure:**
-    Ensure MySQL, MinIO, and RabbitMQ are running. Use `docker-compose up -d` in the `config-repo` or project root.
+    Use `docker-compose up -d` in the `config-repo` to start the infrastructure (MySQL, MinIO, RabbitMQ, Config Server).
 
 2.  **Run the application:**
     ```bash
@@ -61,22 +61,32 @@ The application will be available at `http://localhost:8082`.
 
 ## Key APIs
 
-**Base URL:** `/api/v1`
+**Base URL:** `/collab/api/v1`
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | `POST` | `/groups` | Create a new group. |
+| `GET` | `/groups/all` | Get all groups. |
+| `GET` | `/groups/me` | Get my groups. |
 | `POST` | `/groups/{groupId}/join` | Join a group. |
+| `GET` | `/groups/{groupId}` | Get group details. |
+| `GET` | `/groups/{groupId}/members` | Get group members. |
 | `GET` | `/groups/{groupId}/messages` | Get group messages. |
 | `POST` | `/groups/{groupId}/messages` | Send a message. |
+| `POST` | `/groups/{groupId}/notes` | Upload a group note. |
+| `GET` | `/groups/{groupId}/notes` | Search group notes. |
 | `POST` | `/files/upload` | Upload a file. |
-| `GET` | `/test/profile` | Get active profile and DB URL (Test endpoint). |
+| `POST` | `/files/presign/file` | Presign upload for user file. |
 
 ### WebSockets
 
 *   **Endpoint:** `/ws`
 *   **Topic:** `/topic/groups/{groupId}/events`
-*   **Destinations:** `/app/chat.send.{groupId}`, `/app/chat.typing.{groupId}`
+*   **Destinations:**
+    *   `/app/chat.send.{groupId}`
+    *   `/app/chat.typing.{groupId}`
+    *   `/app/chat.edit.{groupId}`
+    *   `/app/chat.delete.{groupId}`
 
 ## Configuration
 
@@ -84,3 +94,5 @@ The application will be available at `http://localhost:8082`.
 *   **Database:** MySQL (`jdbc:mysql://localhost:3306/collaboration_service`)
 *   **Storage:** MinIO
 *   **Messaging:** RabbitMQ
+*   **Config Server:** Fetches configuration from the centralized Config Server.
+*   **Gateway:** Accessible via Gateway at `http://localhost:8080/studybuddy/collab/**`.
